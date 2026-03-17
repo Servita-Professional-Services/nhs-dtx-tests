@@ -1,4 +1,4 @@
-name: NHS DTx QA Automation (E2E, API, Contract)
+name: NHS DTx Automation Tests
 
 # NOTE:
 # Currently only E2E tests are active.
