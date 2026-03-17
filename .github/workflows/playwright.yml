@@ -11,16 +11,15 @@ on:
     branches: [ main ]
 
 jobs:
-
   e2e-tests:
     name: E2E Tests (Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -36,7 +35,7 @@ jobs:
 
       - name: Upload E2E report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: e2e-playwright-report
           path: playwright-report/
@@ -44,7 +43,7 @@ jobs:
 
       - name: Upload E2E results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: e2e-junit-results
           path: test-results/junit/
@@ -52,24 +51,38 @@ jobs:
 
       - name: Upload E2E artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: e2e-artifacts
           path: test-results/artifacts/
           retention-days: 30
 
+      - name: Publish test summary
+        if: always()
+        run: |
+          echo "## NHS DTx E2E Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Suite: Playwright E2E" >> $GITHUB_STEP_SUMMARY
+          echo "- Environment: CI" >> $GITHUB_STEP_SUMMARY
+          echo "- HTML report artifact: e2e-playwright-report" >> $GITHUB_STEP_SUMMARY
+          echo "- JUnit results artifact: e2e-junit-results" >> $GITHUB_STEP_SUMMARY
+          echo "- Failure evidence artifact: e2e-artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Notes" >> $GITHUB_STEP_SUMMARY
+          echo "- Download the HTML report artifact and open index.html" >> $GITHUB_STEP_SUMMARY
+          echo "- Review screenshots, traces, or videos for failed scenarios if available" >> $GITHUB_STEP_SUMMARY
 
   # ---------------- FUTURE SCOPE ---------------- #
 
   api-tests:
     name: API Tests (Future)
     runs-on: ubuntu-latest
-    if: false   # Disabled until API tests are implemented
+    if: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -83,22 +96,21 @@ jobs:
 
       - name: Upload API results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: api-junit-results
           path: test-results/junit/
           retention-days: 30
 
-
   contract-tests:
     name: Contract Tests (Future)
     runs-on: ubuntu-latest
-    if: false   # Disabled until contract tests are implemented
+    if: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -112,7 +124,7 @@ jobs:
 
       - name: Upload Contract results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: contract-junit-results
           path: test-results/junit/
