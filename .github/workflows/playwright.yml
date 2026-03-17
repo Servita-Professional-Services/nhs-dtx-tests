@@ -13,6 +13,8 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 jobs:
   e2e-tests:
@@ -32,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       - name: Run E2E tests
         run: npm run test:e2e
@@ -100,6 +102,31 @@ jobs:
           echo "- Download the Allure report artifact and open index.html for dashboard view." >> $GITHUB_STEP_SUMMARY
           echo "- Playwright HTML report is also available as a backup detailed report." >> $GITHUB_STEP_SUMMARY
           echo "- Review screenshots, traces, or videos for failed scenarios if available." >> $GITHUB_STEP_SUMMARY
+
+  deploy-allure-report:
+    name: Deploy Allure Report to GitHub Pages
+    if: always() && github.ref == 'refs/heads/main'
+    needs: e2e-tests
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download Allure report artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: allure-report
+          path: ./allure-report
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./allure-report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   # ---------------- FUTURE SCOPE ---------------- #
 
