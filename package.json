@@ -1,0 +1,33 @@
+{
+  "name": "nhs-dtx-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test --grep @e2e",
+    "test:ui": "playwright test --grep @ui",
+    "test:api": "playwright test --grep @api",
+    "test:contract": "playwright test --grep @contract",
+    "test:perf": "playwright test --grep @performance",
+    "test:accessibility": "playwright test --grep @accessibility",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:local": "playwright test --headed",
+    "test:e2e:local": "playwright test --grep @e2e --headed"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@estruyf/github-actions-reporter": "^1.11.0",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.2.3",
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "cross-env": "^10.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1"
+  }
+}
