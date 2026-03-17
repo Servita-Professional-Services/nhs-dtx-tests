@@ -2,7 +2,7 @@ import {defineConfig, devices} from '@playwright/test';
 import {getEnv} from './src/libraries/env';
 
 const env = getEnv();
-const isCI = !!process.env.CI;
+const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
     testDir: './src/tests',
@@ -12,9 +12,11 @@ export default defineConfig({
     workers: isCI ? 2 : undefined,
     failOnFlakyTests: isCI,
     timeout: 60_000,
+
     expect: {
         timeout: 10_000,
     },
+
     outputDir: 'test-results/artifacts',
 
     reporter: isCI
@@ -22,6 +24,7 @@ export default defineConfig({
             ['line'],
             ['html', {outputFolder: 'playwright-report', open: 'never'}],
             ['junit', {outputFile: 'test-results/junit/results.xml'}],
+            ['allure-playwright'],
             [
                 '@estruyf/github-actions-reporter',
                 {
@@ -34,7 +37,9 @@ export default defineConfig({
         ]
         : [
             ['list'],
-            ['html', {outputFolder: 'playwright-report', open: 'always'}],
+            ['html', {outputFolder: 'playwright-report', open: 'on-failure'}],
+            ['junit', {outputFile: 'test-results/junit/results.xml'}],
+            ['allure-playwright'],
         ],
 
     use: {
@@ -56,12 +61,12 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
             },
         },
-        // {
-        //   name: 'Mobile Safari',
-        //   use: {
-        //     ...devices['iPhone 12'],
-        //   },
-        // },
+        {
+            name: 'Mobile Safari',
+            use: {
+                ...devices['iPhone 12'],
+            },
+        },
     ],
 
     // webServer: {
