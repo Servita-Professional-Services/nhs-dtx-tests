@@ -78,7 +78,7 @@ jobs:
 
   deploy-allure-report:
     name: Deploy Allure Report to GitHub Pages
-    if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+    if: always() && github.ref == 'refs/heads/main'
     needs: e2e-tests
     runs-on: ubuntu-latest
 
