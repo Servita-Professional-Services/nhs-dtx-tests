@@ -1,5 +1,5 @@
 import {Page, Locator, expect} from '@playwright/test';
-import {NhsLoginUser} from '../test-data/nhs-login-users';
+import {NhsLoginUser} from "../../test-data/nhsLoginUsers";
 
 export class LoginPage {
     readonly page: Page;
