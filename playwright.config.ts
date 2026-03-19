@@ -23,27 +23,15 @@ export default defineConfig({
         ? [
             ['line'],
             ['html', {outputFolder: 'playwright-report', open: 'never'}],
-            ['junit', {outputFile: 'test-results/junit/results.xml'}],
             ['allure-playwright'],
-            [
-                '@estruyf/github-actions-reporter',
-                {
-                    title: 'DTx Test Results',
-                    useDetails: true,
-                    showError: true,
-                    showTags: true,
-                },
-            ],
         ]
         : [
             ['list'],
             ['html', {outputFolder: 'playwright-report', open: 'on-failure'}],
-            ['junit', {outputFile: 'test-results/junit/results.xml'}],
             ['allure-playwright'],
         ],
-
     use: {
-        baseURL: env.baseUrl,
+        baseURL: env.baseUrl || 'http://localhost:3000',
         headless: isCI,
         viewport: {width: 1280, height: 720},
         actionTimeout: 30_000,

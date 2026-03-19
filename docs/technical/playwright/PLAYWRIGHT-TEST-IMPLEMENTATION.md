@@ -1,379 +1,189 @@
 # NHS DTx – Playwright Test Implementation
 
----
+## 1. Purpose
 
-# 1. Purpose
+This document describes the current automated test framework for the NHS Digital Therapeutics (DTx) platform.
 
-This document describes the automated test framework used for the NHS Digital Therapeutics (DTx) platform.
+At this stage, the framework focuses on validating:
 
-The framework validates:
-
-* API behaviour and contract compliance
 * End-to-End (E2E) user workflows
-* Performance characteristics
-* Environment stability across Dev, QA, Staging, and Beta
+* Basic UI behaviour (login → HealthStore navigation)
+* Environment stability in local setup and AWS-hosted integration environment
 
-The architecture is modular, maintainable, and designed for long-term scalability.
-
----
-
-# 2. Test Architecture Overview
-
-The framework is structured around four pillars:
-
-1. **API Validation**
-2. **UI / E2E Automation**
-3. **Schema Contract Enforcement**
-4. **Tagged & Environment-Based Execution**
-
-Execution is environment-agnostic and controlled via configuration variables.
+The implementation is intentionally minimal and will evolve incrementally.
 
 ---
 
-# 3. Project Structure
+## 2. Test Architecture Overview
 
-```
+The current framework is focused on:
+
+* UI / E2E Automation
+* Simple tagging and execution
+
+Future capabilities such as API validation, schema enforcement, and performance testing are planned but not yet implemented.
+
+---
+
+## 3. Project Structure
+
+```text
 nhs-dtx-tests/
 │
 ├── .github/                  # CI workflows
-├── docs/                     # Documentation & governance artefacts
+├── docs/                     # Documentation
 ├── env/                      # Environment configs
-├── resources/                # Static test data
-│
 ├── src/
-│   ├── config/               # Centralised environment configuration
-│   ├── libraries/            # Helpers & reusable utilities
-│   ├── pages/                # Page Object Model classes
-│   ├── schemas/              # JSON schemas for API validation
-│   └── tests/
-│       ├── api/              # API tests
-│       ├── e2e/              # End-to-End journeys
-│       └── performance/      # Performance tests
+│   ├── libraries/            # Reusable helpers/utilities
+│   ├── pages/                # Page Object Model (POM)
+│   ├── test-data/            # Test users and data
+│   └── tests/                # E2E tests (current focus)
 │
-├── reports/
-├── playwright-report/
-├── test-results/
+├── playwright-report/        # HTML reports (generated)
+├── test-results/             # Test artifacts (generated)
+├── allure-report/            # Allure report (generated)
+├── allure-results/           # Allure raw results (generated)
 │
-├── Dockerfile
-├── dockerised-test-run.sh
-├── playwright.config.ts
+├── Dockerfile                # Container setup
+├── dockerised-test-run.sh    # Docker execution script
+├── playwright.config.ts      # Playwright configuration
+├── package.json              # Project dependencies
+├── tsconfig.json             # TypeScript config
 └── README.md
 ```
 
-This structure enforces separation of concerns and clean scalability.
+**Notes:**
+
+* Current implementation focuses on **E2E tests only**
+* Reporting folders are **generated artifacts (not source-controlled)**
+* Structure is intentionally minimal and will expand as the framework evolves
 
 ---
 
-# 4. Environment Configuration
+## 4. Environment Configuration
 
-All environment switching is controlled via environment variables.
+Environment configuration is controlled via environment variables.
 
 Example:
 
-```
-DTX_API_BASE_URL
-DTX_UI_BASE_URL
-DTX_USERNAME
-DTX_PASSWORD
-```
-
-Optional improvement:
-
-`src/config/env.ts`
-
-```ts
-export const config = {
-  apiBaseUrl: process.env.DTX_API_BASE_URL!,
-  uiBaseUrl: process.env.DTX_UI_BASE_URL!,
-  username: process.env.DTX_USERNAME!,
-  password: process.env.DTX_PASSWORD!,
-};
-```
+* BASE_URL
+* TEST_ENV
 
 This ensures:
 
-* No hardcoded URLs
-* No environment-specific logic inside tests
-* Easy switching between QA → Beta → Production-like
+* No hardcoded values
+* Easy switching between environments
+* Clean separation of config from tests
 
 ---
 
-# 5. API Testing Implementation
+## 5. End-to-End (E2E) Implementation
 
-Location:
+**Location:**
+`src/tests/`
 
-```
-src/tests/api/
-```
+### Current Coverage
 
-## 5.1 API Coverage Includes
+* NHS Login flow (email, password, OTP)
+* Navigation to HealthStore
+* Basic UI validation
 
-* Status code validation
-* Required headers validation
-* Negative and positive scenarios
-* Response payload structure
-* Schema validation
-* Error object validation
-* Correlation ID handling
+Example:
 
----
-
-## 5.2 API Test Example
-
-```typescript
-import { test, expect } from '@playwright/test';
-import { runApiTestCase } from '@libs/api-test-helper';
-
-test('@DTX-API-001 @api @smoke Invalid Patient Identifier', async () => {
-
-  await runApiTestCase({
-    endpoint: `/patients?identifier=invalid`,
-    schemaPath: 'src/schemas/operation-outcome-schema.json',
-    testId: 'DTX-API-001',
-    assertions: (data) => {
-      expect(data.resourceType).toBe("OperationOutcome");
-      expect(data.issue[0].severity).toBe("error");
-    },
-  });
+```ts
+test('@DTX-E2E-001 - User login to HealthStore @e2e @smoke', async ({ page }) => {
+  // test logic
 });
 ```
 
 ---
 
-# 6. API Helper Pattern
+## 6. Page Object Model (POM)
 
-Centralised helper ensures consistency.
+**Location:**
+`src/pages/`
 
-`src/libraries/api-test-helper.ts`
+Each page contains only:
 
-Responsibilities:
-
-* Inject correlation ID (auto-generate if missing)
-* Execute request
-* Validate schema (AJV)
-* Store response artifact
-* Execute custom assertions
-* Standardise error handling
-
-Example structure:
-
-```typescript
-export async function runApiTestCase({
-  endpoint,
-  schemaPath,
-  testId,
-  assertions,
-}: {
-  endpoint: string;
-  schemaPath?: string;
-  testId: string;
-  assertions: (data: any) => void;
-}) {
-  const response = await request.get(endpoint);
-
-  if (schemaPath) {
-    validateSchema(response.data, schemaPath);
-  }
-
-  writeArtifact(`test-results/api/${testId}.json`, response.data);
-
-  assertions(response.data);
-}
-```
-
-This reduces duplication and enforces consistency.
-
----
-
-# 7. Schema Validation Strategy
-
-Schemas are stored in:
-
-```
-src/schemas/
-```
-
-Validation uses AJV.
-
-Purpose:
-
-* Enforce API contract stability
-* Detect breaking changes early
-* Gate CI failures
-* Provide audit traceability
-
-If schema validation fails, execution stops and logs structured errors.
-
----
-
-# 8. End-to-End (E2E) Implementation
-
-Location:
-
-```
-src/tests/e2e/
-```
-
-## 8.1 E2E Coverage Includes
-
-* Authentication flows
-* Critical user journeys
-* Role-based behaviour
-* Alert visibility
-* UI validation messages
-* Cross-service interaction
-
----
-
-# 9. Page Object Model (POM)
-
-Location:
-
-```
-src/pages/
-```
-
-Each UI screen is abstracted into a class.
+* Locators
+* Actions
 
 Example:
 
-```typescript
-import { Page, Locator } from '@playwright/test';
-
+```ts
 export class LoginPage {
   constructor(private page: Page) {}
 
-  usernameInput: Locator = this.page.getByTestId('username');
-  passwordInput: Locator = this.page.getByTestId('password');
-  loginButton: Locator = this.page.getByRole('button', { name: 'Login' });
+  emailInput = this.page.getByRole('textbox', { name: 'Email address' });
+  passwordInput = this.page.getByRole('textbox', { name: 'Password' });
 
-  async login(username: string, password: string) {
-    await this.usernameInput.fill(username);
+  async login(email: string, password: string) {
+    await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
-    await this.loginButton.click();
   }
 }
 ```
 
-Benefits:
+Assertions are kept in test files.
 
-* UI abstraction
-* Maintainability
-* Reusability
-* Reduced duplication
-* Clean test logic
 ---
 
-# 10. Tagging Strategy
+## 7. Tagging Strategy
 
-Simple and transparent tagging approach:
+Simple and minimal tagging is used.
 
-Examples:
+**Current tags:**
 
-```
-@api
-@e2e
-@performance
-@smoke
-@DTX-API-001
-```
+* @e2e
+* @smoke
+* @DTX-E2E-001
 
-Execution examples:
+Run tests:
 
-```
+```bash
 npx playwright test --grep @smoke
-npx playwright test --grep @api
-npx playwright test --grep @DTX-API-001
 ```
 
-No complex configuration objects required.
+Tagging will expand as more test types are introduced.
 
 ---
 
-# 11. Cross-Browser Readiness
+## 8. CI/CD Integration
 
-Configured in `playwright.config.ts`:
+CI currently supports:
 
-```ts
-projects: [
-  { name: 'chromium', use: { browserName: 'chromium' } },
-  { name: 'firefox', use: { browserName: 'firefox' } },
-  { name: 'webkit', use: { browserName: 'webkit' } },
-]
-```
+* Smoke test execution
+* Basic reporting
 
-Can be enabled when required via CI matrix.
-
----
-
-# 12. CI/CD Integration
-
-CI workflow supports:
-
-* Tagged execution
-* Smoke-only runs on PR
-* Full regression on main branch
-* Artifact retention
-* HTML report publishing
-
-Reports stored in:
-
-```
-playwright-report/
-test-results/
-```
-
----
-
-# 13. Dockerised Execution
-
-Ensures consistent execution across environments.
-
-Run:
+Example:
 
 ```bash
-./dockerised-test-run.sh
+npx playwright test --grep @smoke
 ```
 
-Or:
-
-```bash
-docker build -t nhs-dtx-tests .
-docker run nhs-dtx-tests
-```
+This will expand as coverage increases.
 
 ---
 
-# 14. Governance & Traceability
+## 9. Reporting
 
-The framework provides:
+Playwright HTML reports are used.
 
-* Unique Test IDs
-* Response artifact storage
-* Schema validation logs
-* CI execution evidence
-* Structured documentation
+Reports include:
 
-This supports:
-
-* Requirement traceability
-* Contract assurance
-* Audit readiness
-* Controlled test execution
+* Test results
+* Screenshots on failure
+* Traces for debugging
+* Video on failure
 
 ---
 
-# Final Summary
+## 10. Future Enhancements (Planned)
 
-The NHS DTx Playwright framework is:
+The following are planned for future iterations:
 
-* Modular
-* Environment-neutral
-* Contract-enforcing
-* CI-ready
-* Dockerised
-* Scalable
-* Maintainable
-* Governance-aligned
-
-It supports structured execution across multiple environments without architectural changes.
+* API testing
+* Schema validation
+* Performance testing (k6)
+* Enhanced reporting (Allure)
+* Vendor-specific test structure

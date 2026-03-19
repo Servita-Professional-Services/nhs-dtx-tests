@@ -1,97 +1,76 @@
-# DTx Test Tagging Mechanism
+## DTx Test Tagging Mechanism
 
-## 1. Overview
+### 1. Overview
 
-This document describes the tagging and test identification strategy used in the **DTx Playwright automation framework**.
+This document describes the tagging and test identification strategy used in the DTx Playwright automation framework.
 
-The tagging mechanism allows tests to be grouped and executed selectively using **Playwright's built-in tagging and filtering capabilities**.
+At the current stage, the framework is focused on **E2E testing only**, with a minimal and working implementation.
+
+The tagging mechanism allows tests to be grouped and executed selectively using Playwright's built-in filtering capabilities.
 
 This approach enables:
 
 * Controlled execution of test groups
-* Flexible CI/CD pipelines
-* Selective test runs (API, UI, E2E, smoke, regression)
+* Simple CI/CD filtering
+* Selective test runs (currently E2E-focused)
 * Easier debugging and isolation of failures
-* Clear traceability of automated tests
+* Basic traceability of automated tests
 
-Tags are added directly to the **test title**, making them easy to filter using Playwright CLI options.
+Tags are added directly to the test title, making them easy to filter using Playwright CLI options.
 
 ---
 
-# 2. Purpose of the Tagging Strategy
+### 2. Purpose of the Tagging Strategy
 
-The tagging mechanism is designed to:
+The tagging mechanism is currently designed to:
 
-* Enable execution of specific test categories (API, UI, E2E)
-* Control which tests run in different environments (local, CI, Alpha, Beta)
+* Enable execution of E2E tests
+* Control which tests run in local and CI environments
 * Reduce CI runtime by running only required test groups
-* Provide structured test categorisation
-* Support targeted debugging using unique test identifiers
-* Improve traceability between automated tests and requirements
+* Provide simple and consistent test categorisation
+* Support debugging using unique test identifiers
+
+This strategy will expand as more test types (API, UI, regression) are introduced.
 
 ---
 
-# 3. Tag Categories
+### 3. Tag Categories
 
-The DTx automation framework uses a **small set of consistent tags** to categorise tests.
+The DTx automation framework uses a small set of consistent tags to categorise tests.
 
-| Tag           | Purpose                                |
-| ------------- | -------------------------------------- |
-| `@api`        | API and integration tests              |
-| `@ui`         | UI level tests                         |
-| `@e2e`        | End-to-end system tests                |
-| `@smoke`      | Critical validation tests              |
-| `@regression` | Full regression test suite             |
-| `@negative`   | Negative/error scenarios               |
-| `@security`   | Authentication and authorization tests |
+| Tag         | Purpose                                      |
+| ----------- | -------------------------------------------- |
+| @api        | API and integration tests *(planned)*        |
+| @ui         | UI level tests *(planned)*                   |
+| @e2e        | End-to-end system tests *(currently in use)* |
+| @smoke      | Critical validation tests                    |
+| @regression | Full regression test suite *(planned)*       |
 
-This structure keeps tagging **simple, readable, and maintainable**.
+At this stage, only **E2E tests are implemented**, with tagging kept minimal.
+Additional tags will be used as the framework evolves.
 
 ---
 
-# 4. Mandatory Test ID Convention
+### 4. Mandatory Test ID Convention
 
-Every automated test **must include a unique Test ID** at the beginning of the test name.
+Every automated test includes a unique Test ID at the beginning of the test name.
 
 This ensures:
 
-* Traceability to requirements and RTM
+* Basic traceability
 * Easier debugging
-* CI pipeline filtering
-* Clear reporting for governance and audit
+* Clear identification of test cases
 
-### Example Test IDs
+Example Test IDs:
 
-```
-@DTX-API-001
-@DTX-UI-010
-@DTX-E2E-005
-```
+* @DTX-E2E-001
 
 ---
 
-# 5. Example Test Structure
-
-Example API test:
+### 5. Example Test Structure
 
 ```ts
-test('@DTX-API-001 - Unattended prescribe happy path @api @smoke', async ({ request }) => {
-    // test logic
-});
-```
-
-Example UI test:
-
-```ts
-test('@DTX-UI-010 - Patient login via NHS Login @ui @smoke', async ({ page }) => {
-    // test logic
-});
-```
-
-Example end-to-end test:
-
-```ts
-test('@DTX-E2E-005 - COPD patient referral to DTx activation flow @e2e @regression', async ({ page }) => {
+test('@DTX-E2E-001 - User login to HealthStore @e2e @smoke', async ({ page }) => {
     // test logic
 });
 ```
@@ -104,101 +83,84 @@ This structure provides:
 
 ---
 
-# 6. Running Tagged Tests
+### 6. Running Tagged Tests
 
 Playwright allows tests to be filtered using the `--grep` option.
 
-### Run smoke tests
+Run E2E tests:
 
-```
-npx playwright test --grep @smoke
-```
-
-### Run API tests
-
-```
-npx playwright test --grep @api
-```
-
-### Run UI tests
-
-```
-npx playwright test --grep @ui
-```
-
-### Run E2E tests
-
-```
+```bash
 npx playwright test --grep @e2e
 ```
 
-### Run a specific test
+Run smoke tests:
 
-```
-npx playwright test --grep DTX-API-001
-```
-
----
-
-# 7. CI/CD Integration
-
-The tagging strategy enables flexible CI pipelines.
-
-Example pipeline stages:
-
-| Pipeline Stage       | Tests Executed   |
-| -------------------- | ---------------- |
-| PR validation        | Smoke tests      |
-| Integration pipeline | API tests        |
-| Nightly build        | Regression suite |
-| Release validation   | Full E2E suite   |
-
-Example CI command:
-
-```
+```bash
 npx playwright test --grep @smoke
 ```
 
+Run a specific test:
+
+```bash
+npx playwright test --grep DTX-E2E-001
+```
+
 ---
 
-# 8. Reporting
+### 7. CI/CD Integration
 
-Test results are generated automatically using **Playwright HTML reports**.
+Currently, CI focuses on minimal E2E validation.
+
+Example pipeline stages:
+
+| Pipeline Stage | Tests Executed |
+| -------------- | -------------- |
+| PR validation  | Smoke tests    |
+
+Example CI command:
+
+```bash
+npx playwright test --grep @smoke
+```
+
+This will expand as more test coverage is added.
+
+---
+
+### 8. Reporting
+
+Test results are generated using Playwright HTML reports.
 
 Reports provide:
 
-* Test case execution status
+* Test execution status
 * Error messages
 * Screenshots on failure
-* Trace files
-* Video recordings for failed tests
+* Trace files and videos
 
-Additional reporting tools such as **Allure or Testmo** may be integrated later for enhanced business-readable reporting.
+Additional reporting tools (e.g. Allure) may be integrated later.
 
 ---
 
-# 9. Benefits for the DTx Project
+### 9. Benefits for the DTx Project
 
 This tagging strategy provides:
 
-* Clear test categorisation
+* Simple and maintainable setup
 * Reduced CI runtime
-* Improved traceability
-* Structured test execution
+* Clear test categorisation
 * Easy debugging and failure isolation
-* Scalable automation as the project moves from **Alpha → Beta → Production**
+* Scalable approach as the project evolves
 
 ---
 
-# 10. Summary
+### 10. Summary
 
-The DTx tagging strategy uses **consistent test IDs and lightweight Playwright tags** to manage automated test execution.
+The current DTx tagging strategy is intentionally minimal and focused on **working E2E tests only**.
 
 This ensures:
 
-* Controlled test execution
-* Flexible CI filtering
-* Clear governance traceability
-* Maintainable and scalable automation
+* Controlled and reliable test execution
+* Simple CI integration
+* Clean and maintainable framework
 
-The approach aligns with **Playwright best practices while supporting the governance and traceability requirements of the NHS DTx programme.**

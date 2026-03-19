@@ -12,13 +12,9 @@ export type NhsLoginUser = {
     postcode: string;
     mobileNumber: string;
     reportLabel: string;
-    e2e?: boolean;
-    ui?: boolean;
-    accessibility?: boolean;
 };
 
 export const nhsLoginUsers: Record<string, NhsLoginUser> = {
-
     testuserlive: {
         email: 'testuserlive@demo.signin.nhs.uk',
         password: 'Passw0rd$1',
@@ -33,9 +29,6 @@ export const nhsLoginUsers: Record<string, NhsLoginUser> = {
         postcode: 'HD7 4JL',
         mobileNumber: '+447887510887',
         reportLabel: 'Default actionable patient',
-        e2e: true,
-        ui: true,
-        accessibility: true,
     },
 
     testuserlive1: {
@@ -52,9 +45,6 @@ export const nhsLoginUsers: Record<string, NhsLoginUser> = {
         postcode: 'HD1 4LR',
         mobileNumber: '+447887510887',
         reportLabel: 'Patient with multiple DTx apps',
-        e2e: true,
-        ui: true,
-        accessibility: true,
     },
 
     testuserlive11: {
@@ -71,9 +61,6 @@ export const nhsLoginUsers: Record<string, NhsLoginUser> = {
         postcode: 'DN16 2LP',
         mobileNumber: '+447887510887',
         reportLabel: 'ClearAir prescribed patient',
-        e2e: true,
-        ui: true,
-        accessibility: true,
     },
 
     testuserlive17: {
@@ -90,9 +77,6 @@ export const nhsLoginUsers: Record<string, NhsLoginUser> = {
         postcode: 'M21 7HW',
         mobileNumber: '+447887510887',
         reportLabel: 'PulsePoint prescribed patient',
-        e2e: true,
-        ui: true,
-        accessibility: false,
     },
 
     testuserlive20: {
@@ -109,9 +93,6 @@ export const nhsLoginUsers: Record<string, NhsLoginUser> = {
         postcode: 'M20 1FF',
         mobileNumber: '+447887510887',
         reportLabel: 'AirPath and ClearAir prescribed patient',
-        e2e: true,
-        ui: true,
-        accessibility: false,
     },
 
     testuserlive6: {
@@ -128,9 +109,5 @@ export const nhsLoginUsers: Record<string, NhsLoginUser> = {
         postcode: 'DN9 1TL',
         mobileNumber: '+447887510887',
         reportLabel: 'Logged in, no prescribed apps',
-        e2e: true,
-        ui: true,
-        accessibility: true,
     },
-
 };

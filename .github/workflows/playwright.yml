@@ -1,12 +1,10 @@
 name: NHS DTx Automation Tests
 
-# NOTE:
-# Currently only E2E tests are active.
-# API and Contract tests are placeholders for future implementation.
-
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - feature/**
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -18,17 +16,19 @@ permissions:
 
 jobs:
   e2e-tests:
-    name: E2E Tests (Playwright)
+    name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
           node-version: 20
-          cache: npm
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -40,6 +40,7 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
+          BASE_URL: https://ddjc0dec27n24.cloudfront.net
 
       - name: Generate Allure report
         if: always()
@@ -53,36 +54,12 @@ jobs:
           path: allure-report/
           retention-days: 30
 
-      - name: Upload Allure raw results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: allure-results
-          path: allure-results/
-          retention-days: 30
-
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: e2e-playwright-report
+          name: playwright-report
           path: playwright-report/
-          retention-days: 30
-
-      - name: Upload E2E JUnit results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: e2e-junit-results
-          path: test-results/junit/
-          retention-days: 30
-
-      - name: Upload E2E artifacts
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: e2e-artifacts
-          path: test-results/artifacts/
           retention-days: 30
 
       - name: Publish test summary
@@ -93,21 +70,18 @@ jobs:
           echo "- Suite: Playwright E2E" >> $GITHUB_STEP_SUMMARY
           echo "- Environment: CI" >> $GITHUB_STEP_SUMMARY
           echo "- Allure report artifact: allure-report" >> $GITHUB_STEP_SUMMARY
-          echo "- Allure raw results artifact: allure-results" >> $GITHUB_STEP_SUMMARY
-          echo "- Playwright HTML report artifact: e2e-playwright-report" >> $GITHUB_STEP_SUMMARY
-          echo "- JUnit results artifact: e2e-junit-results" >> $GITHUB_STEP_SUMMARY
-          echo "- Failure evidence artifact: e2e-artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Playwright HTML report artifact: playwright-report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Notes" >> $GITHUB_STEP_SUMMARY
-          echo "- Download the Allure report artifact and open index.html for dashboard view." >> $GITHUB_STEP_SUMMARY
-          echo "- Playwright HTML report is also available as a backup detailed report." >> $GITHUB_STEP_SUMMARY
-          echo "- Review screenshots, traces, or videos for failed scenarios if available." >> $GITHUB_STEP_SUMMARY
+          echo "- Download Allure report and open index.html." >> $GITHUB_STEP_SUMMARY
+          echo "- Playwright HTML report is available as backup." >> $GITHUB_STEP_SUMMARY
 
   deploy-allure-report:
     name: Deploy Allure Report to GitHub Pages
     if: always() && github.ref == 'refs/heads/main'
     needs: e2e-tests
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -127,61 +101,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # ---------------- FUTURE SCOPE ---------------- #
-
-  api-tests:
-    name: API Tests (Future)
-    runs-on: ubuntu-latest
-    if: false
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Run API tests
-        run: npm run test:api
-        env:
-          CI: true
-
-      - name: Upload API results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: api-junit-results
-          path: test-results/junit/
-          retention-days: 30
-
-  contract-tests:
-    name: Contract Tests (Future)
-    runs-on: ubuntu-latest
-    if: false
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Run Contract tests
-        run: npm run test:contract
-        env:
-          CI: true
-
-      - name: Upload Contract results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: contract-junit-results
-          path: test-results/junit/
-          retention-days: 30

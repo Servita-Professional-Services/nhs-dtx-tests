@@ -1,123 +1,192 @@
+# NHS DTx - Test Automation Project
 
-# NHS DTx Test Automation Repository
+## Overview
 
-A centralized **Test Automation Mono-repository** designed to consolidate all test automation artefacts for the **NHS Digital Therapeutics (DTx)** project.
+A centralized test automation mono-repository for the NHS Digital Therapeutics (DTx) project.
 
-This repository leverages:
+The repository is designed to support End-to-End (E2E), API, and performance testing using Playwright and k6.
 
-* **Playwright** with Node.js and TypeScript for comprehensive functional testing of backend and frontend components.
-* **K6** (JavaScript + Go bindings) for performance and load testing to ensure system robustness and reliability.
+The current implementation focuses on Playwright-based E2E automation to validate core user journeys, with API and performance testing to be introduced incrementally.
 
----
+
+## Tech Stack
+
+* **Playwright (TypeScript)** – E2E/UI test automation
+* **Node.js** – Runtime environment
+* **k6** – Performance testing *(planned)*
+
 
 ## Universal Tools & Configuration (REQUIRED)
 
-Before proceeding with any framework-specific setup, ensure you have completed the **universal configuration** for your operating system:
+Before proceeding, ensure your environment is configured:
 
 * [Universal macOS Configuration](docs/setup/UNIVERSAL-CONFIG-MAC.md)
 * [Universal Windows Configuration](docs/setup/UNIVERSAL-CONFIG-WINDOWS.md)
 
----
+
+## Prerequisites
+
+Ensure the following are installed:
+
+* Node.js (v18+ recommended)
+* npm
+
+### Install project dependencies
+
+```bash
+npm install
+```
+
+### Install Playwright browsers
+
+```bash
+npx playwright install
+```
+
+For fresh environments or CI:
+
+```bash
+npx playwright install --with-deps
+```
+
+## How to Run Tests
+
+Run all commands from the root of the repository.
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run all tests
+
+```bash
+npm run test
+```
+
+### Run E2E tests
+
+```bash
+npm run test:e2e
+```
+
+### Run by tag
+
+```bash
+npx playwright test --grep @smoke
+```
+
+### Run in headed mode
+
+```bash
+npm run test:e2e --headed
+```
+
+### Run in debug mode
+
+```bash
+npm run test:e2e --debug
+```
 
 ## Playwright Tests
 
 ### 1. Playwright Setup and Configuration
 
-To execute Playwright tests, follow the setup guides based on your OS:
+Follow setup guides based on your OS:
 
 * [Playwright macOS Setup & Configuration](docs/setup/playwright/PLAYWRIGHT-MAC-SETUP.md)
 * [Playwright Windows Setup & Configuration](docs/setup/playwright/PLAYWRIGHT-WINDOWS-SETUP.md)
 
 ### 2. Playwright Tagging Mechanism
 
-Understanding the **tagging mechanism** is essential for both local and CI environments. Refer to:
+Basic tagging is used for test execution and filtering.
+
+Refer to:
 
 * [Playwright Tagging](docs/technical/playwright/PLAYWRIGHT-TAGGING.md)
 
-This document explains how the tagging system works, and how you can modify or leverage it for your tests.
 
 ### 3. Playwright Test Implementation
 
-For details on the **structure and implementation** of Playwright tests in this project, refer to:
+The framework is currently minimal and focused on:
+
+* E2E test flows (login → HealthStore)
+* Page Object Model (POM) structure
+* Clean and maintainable test design
+
+Refer to:
 
 * [Playwright Test Implementation](docs/technical/playwright/PLAYWRIGHT-TEST-IMPLEMENTATION.md)
 
+
 ### 4. Playwright Test Execution
 
-To run Playwright tests via CLI, follow:
+Detailed execution options:
 
 * [Playwright Test Execution](docs/setup/playwright/PLAYWRIGHT-EXECUTION.md)
 
-### 5. Playwright CI Configuration
 
-We currently have **four GitHub Actions YAML configurations** to execute Playwright tests in CI:
+## Environment Configuration
 
-* **PR Pipeline** – runs tests against pull requests:
-  [PR Check Test Pipeline](https://github.com/Servita-Professional-Services/dtx-tests/blob/main/.github/workflows/pr-check-test-jobs.yml)
-
-* **Main Branch Pipeline** – triggers daily tests and allows manual triggers against the main branch:
-  [Main Branch Test Pipeline](https://github.com/Servita-Professional-Services/dtx-tests/blob/main/.github/workflows/main-check-test-jobs.yml)
-
-### 6. Playwright Test Report
-
-After execution, Playwright generates a report directory:
+Environment-specific configuration is stored in:
 
 ```text
-reports/playwright-report/playwright-report-${timestamp}/index.html
+env/.env.dev
 ```
 
-* `${timestamp}` is the execution timestamp.
-* Open the `index.html` file in a browser to view detailed results.
+### Example
 
----
+```env
+BASE_URL=https://dev.example.com
+API_URL=https://dev.api.example.com
+```
 
-## K6 Tests
-
-### 1. K6 Setup and Configuration
-
-To execute K6 performance tests:
-
-* [K6 Setup & Configuration](docs/setup/k6/K6-SETUP.md)
-
-### 2. K6 Test Script Implementation
-
-For guidance on the **structure and implementation** of K6 scripts:
-
-* [K6 Test Implementation](docs/technical/k6/K6-TEST-IMPLEMENTATION.md)
-
-### 3. K6 Test Script Execution
-
-To run K6 scripts locally:
-
-* [K6 Test Execution](docs/setup/k6/K6-TEST-EXECUTION.md)
-
-### 4. Postman to K6 Conversion
-
-Convert Postman API collections to K6 scripts:
+### Set environment (optional)
 
 ```bash
-postman-to-k6 path/to/postman/collection.json -o path/to/output/script.js
-k6 run path/to/output/script.js
+export TEST_ENV=dev
 ```
 
-* Replace paths with your actual collection and script file locations.
+### 5. Playwright CI Configuration
 
-### 5. K6 Load Configurations
+GitHub Actions pipelines are configured for:
 
-* [K6 Load Configurations](docs/technical/k6/K6-LOAD-CONFIGS.md) – predefined load profiles
-* [Load Testing with Postman Collections](https://grafana.com/blog/2020/04/19/load-testing-your-api-with-postman/)
+* **PR Pipeline** – runs smoke tests on pull requests
+* **Main Branch Pipeline** – scheduled and manual runs
 
----
+
+## Test Reports
+
+After execution, the following reports are generated:
+
+### Playwright HTML Report (Debugging)
+
+```text
+playwright-report/index.html
+```
+
+* Detailed execution output
+* Includes screenshots, traces, and logs
+* Used mainly for debugging failures
+
+
+### Allure Report (Primary Report)
+
+Allure report is generated in CI and available as:
+
+* **GitHub Pages (preferred)** – shareable stakeholder link
+* **Artifact download** – open locally
+
+```text
+allure-report/index.html
+```
+
+* Business-friendly report
+* Shows test steps, trends, and failures clearly
+* Primary report for demos and stakeholders
+
 
 ## Resources
 
 * [Playwright Official Documentation](https://playwright.dev/docs/intro)
-* [Dynamic Tagging in Playwright](https://medium.com/@mahtabnejad/how-dynamic-tagging-in-playwright-can-transform-your-test-automation-e97e968fae95)
-* [Unified Test Automation Using Playwright](https://medium.com/@mahtabnejad/a-unified-approach-to-api-database-and-e2e-testing-with-playwright-daa900908333)
-* [Playwright Plugins](https://mxschmitt.github.io/awesome-playwright/)
-* [K6 Learn](https://github.com/grafana/K6-learn)
-* [K6 Examples](https://k6.io/docs/examples/)
-* [Load Testing Toolkit](https://github.com/aliesbelik/load-testing-toolkit)
-* [Authenticating K6 Scripts via Playwright & Shell Scripting](https://medium.com/@mahtabnejad/automating-authentication-in-load-testing-with-playwright-shell-scripting-and-k6-149ec7ca0739)
-
----
