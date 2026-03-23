@@ -10,6 +10,8 @@ export class LoginPage {
     readonly otpHeading: Locator;
     readonly securityCodeInput: Locator;
     readonly acceptCookiesButton: Locator;
+    readonly errorSummary: Locator;
+    readonly emailError: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -20,6 +22,8 @@ export class LoginPage {
         this.otpHeading = page.getByRole('heading', {name: 'Enter the security code'});
         this.securityCodeInput = page.getByRole('textbox', {name: 'Security code'});
         this.acceptCookiesButton = page.getByRole('button', {name: 'Accept all cookies'});
+        this.errorSummary = page.getByRole('alert', { name: 'There is a problem' })
+        this.emailError = page.locator('.nhsuk-error-summary a');
     }
 
     async goto() {

@@ -23,12 +23,12 @@ export default defineConfig({
         ? [
             ['line'],
             ['html', {outputFolder: 'playwright-report', open: 'never'}],
-            ['allure-playwright'],
+            ['allure-playwright', {resultsDir: 'allure-results'}],
         ]
         : [
             ['list'],
             ['html', {outputFolder: 'playwright-report', open: 'on-failure'}],
-            ['allure-playwright'],
+            ['allure-playwright', {resultsDir: 'allure-results'}],
         ],
     use: {
         baseURL: env.baseUrl || 'http://localhost:3000',
@@ -49,12 +49,12 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
             },
         },
-        {
-            name: 'Mobile Safari',
-            use: {
-                ...devices['iPhone 12'],
-            },
-        },
+        // {
+        //     name: 'Mobile Safari',
+        //     use: {
+        //         ...devices['iPhone 12'],
+        //     },
+        // },
     ],
 
     // webServer: {
