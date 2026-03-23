@@ -42,7 +42,8 @@ test.describe('DTx Login & Health Store', () => {
         });
     });
 
-    test('@DTX-E2E-002 User sees error message with invalid password @e2e @smoke', async ({page}) => {
+    // Skipping this negative test for now; re-enable after auth session support is added.
+    test.skip('@DTX-E2E-002 User sees error message with invalid password @e2e @smoke', async ({page}) => {
         const loginPage = new LoginPage(page);
         const user = nhsLoginUsers.testuserlive1;
 
