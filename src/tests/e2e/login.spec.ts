@@ -44,17 +44,22 @@ test.describe('DTx Login & Health Store', () => {
 
     test('@DTX-E2E-002 User sees error message with invalid password @e2e @smoke', async ({page}) => {
         const loginPage = new LoginPage(page);
-        const user = nhsLoginUsers.testuserlive;
+        const user = nhsLoginUsers.testuserlive1;
 
         await test.step('Enter valid email and invalid password', async () => {
+            await expect(loginPage.emailInput).toBeVisible();
+
             await loginPage.emailInput.fill(user.email);
-            await loginPage.passwordInput.fill('WrongPassword123!');
+            await loginPage.passwordInput.fill('WrongPassword12');
             await loginPage.continueButton.click();
         });
 
         await test.step('Validate login error is displayed', async () => {
             await expect(loginPage.errorSummary).toBeVisible();
             await expect(loginPage.errorSummary).toContainText('There is a problem');
+
+            await expect(loginPage.emailError).toBeVisible();
+            await expect(loginPage.emailError).toContainText('Check your details and');
         });
     });
 

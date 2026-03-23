@@ -23,7 +23,7 @@ export class LoginPage {
         this.securityCodeInput = page.getByRole('textbox', {name: 'Security code'});
         this.acceptCookiesButton = page.getByRole('button', {name: 'Accept all cookies'});
         this.errorSummary = page.getByRole('alert', { name: 'There is a problem' })
-        this.emailError = page.locator('.nhsuk-error-summary a');
+        this.emailError = page.getByText('Error: Check your details and');
     }
 
     async goto() {
