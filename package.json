@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:e2e": "playwright test --project=chromium --grep @e2e",
+    "test:e2e": "playwright test --grep @e2e",
     "test:smoke": "playwright test --grep @smoke",
     "test:e2e:headed": "playwright test --grep @e2e --headed",
     "lint": "eslint src/**/*.ts",
