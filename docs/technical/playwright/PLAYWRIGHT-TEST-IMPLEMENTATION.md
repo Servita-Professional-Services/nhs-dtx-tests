@@ -130,15 +130,12 @@ Assertions are kept in test files.
 Simple and minimal tagging is used.
 
 **Current tags:**
-
-* @e2e
-* @smoke
 * @DTX-E2E-001
 
 Run tests:
 
 ```bash
-npx playwright test --grep @smoke
+npx playwright test --grep @DTX-E2E-001
 ```
 
 Tagging will expand as more test types are introduced.
@@ -151,14 +148,6 @@ CI currently supports:
 
 * Smoke test execution
 * Basic reporting
-
-Example:
-
-```bash
-npx playwright test --grep @smoke
-```
-
-This will expand as coverage increases.
 
 ---
 
