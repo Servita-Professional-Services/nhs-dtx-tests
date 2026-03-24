@@ -7,32 +7,18 @@
     "test": "playwright test",
     "test:e2e": "playwright test --grep @e2e",
     "test:smoke": "playwright test --grep @smoke",
-    "test:e2e:headed": "playwright test --grep @e2e --headed",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "typecheck": "tsc --noEmit"
+    "test:e2e:headed": "playwright test --grep @e2e --headed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@estruyf/github-actions-reporter": "^1.11.0",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.57.1",
-    "@typescript-eslint/parser": "^8.57.1",
-    "ajv": "^8.18.0",
-    "ajv-formats": "^3.0.1",
     "allure-commandline": "^2.38.0",
     "allure-playwright": "^3.6.0",
-    "cross-env": "^10.1.0",
-    "eslint": "^10.1.0",
-    "eslint-plugin-playwright": "^2.10.1",
-    "globals": "^17.4.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.1"
+    "cross-env": "^10.1.0"
   },
   "dependencies": {
     "dotenv": "^17.3.1"

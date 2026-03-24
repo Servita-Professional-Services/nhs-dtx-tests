@@ -26,10 +26,6 @@ export class LoginPage {
         this.emailError = page.getByText('Error: Check your details and');
     }
 
-    async goto() {
-        await this.page.goto('http://localhost:3000/');
-    }
-
     async acceptCookiesIfVisible() {
         if (await this.acceptCookiesButton.isVisible().catch(() => false)) {
             await this.acceptCookiesButton.click();

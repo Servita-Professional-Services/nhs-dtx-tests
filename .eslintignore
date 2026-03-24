@@ -1,7 +1,0 @@
-node_modules
-data
-docs
-download
-playwright-report
-data/*.json
-data/*.xlsx

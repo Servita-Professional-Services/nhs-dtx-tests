@@ -49,18 +49,5 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
             },
         },
-        // {
-        //     name: 'Mobile Safari',
-        //     use: {
-        //         ...devices['iPhone 12'],
-        //     },
-        // },
     ],
-
-    // webServer: {
-    //   command: 'npm run start',
-    //   url: env.baseUrl,
-    //   reuseExistingServer: !isCI,
-    //   timeout: 120_000,
-    // },
 });
