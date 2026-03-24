@@ -4,10 +4,6 @@
 
 This repository contains initial test automation for the NHS Digital Therapeutics (DTx) project.
 
-The repository is designed to support End-to-End (E2E), API, and performance testing using Playwright and k6. 
-
-The current implementation focuses on Playwright-based E2E automation to validate core user journeys, with API and performance testing to be introduced incrementally.
-
 ## Tech Stack
 
 * **Playwright (TypeScript)** – E2E/UI test automation
