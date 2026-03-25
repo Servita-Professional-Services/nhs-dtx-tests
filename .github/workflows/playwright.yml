@@ -42,7 +42,7 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run E2E tests
-        run: npx playwright test --project=${{ matrix.browser }} --grep @e2e
+        run: npx playwright test --project=${{ matrix.browser }}
         env:
           CI: true
           BASE_URL: https://ddjc0dec27n24.cloudfront.net

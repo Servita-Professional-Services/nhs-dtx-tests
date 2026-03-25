@@ -14,8 +14,7 @@ test.describe('DTx Login & Health Store', () => {
         homePage = new HomePage(page);
         yourHealthPage = new YourHealthPage(page);
 
-        //await page.goto('/');
-        await page.goto('https://ddjc0dec27n24.cloudfront.net');
+        await page.goto('/');
         await loginPage.acceptCookiesIfVisible();
     });
 
