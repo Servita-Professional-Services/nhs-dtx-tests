@@ -9,7 +9,7 @@ export default defineConfig({
     fullyParallel: !isCI,
     forbidOnly: isCI,
     retries: isCI ? 1 : 0,
-    workers: isCI ? 2 : undefined,
+    workers: isCI ? 1 : undefined,
     failOnFlakyTests: isCI,
     timeout: 60_000,
 
