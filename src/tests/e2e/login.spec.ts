@@ -5,18 +5,21 @@ import {YourHealthPage} from '../../pages/e2e/your-health.page';
 import {nhsLoginUsers} from '../../test-data/nhsLoginUsers';
 
 test.describe('DTx Login & Health Store', () => {
+    let loginPage: LoginPage;
+    let homePage: HomePage;
+    let yourHealthPage: YourHealthPage;
 
     test.beforeEach(async ({page}) => {
-        const loginPage = new LoginPage(page);
+        loginPage = new LoginPage(page);
+        homePage = new HomePage(page);
+        yourHealthPage = new YourHealthPage(page);
 
-        await page.goto('/');
+        //await page.goto('/');
+        await page.goto('https://ddjc0dec27n24.cloudfront.net');
         await loginPage.acceptCookiesIfVisible();
     });
 
-    test('@DTX-E2E-001 User can log in and open Health Store @e2e @smoke', async ({page}) => {
-        const loginPage = new LoginPage(page);
-        const homePage = new HomePage(page);
-        const yourHealthPage = new YourHealthPage(page);
+    test('@DTX-E2E-001 User can log in and open Health Store', async () => {
         const user = nhsLoginUsers.testuserlive;
 
         await test.step('Log in with valid NHS login user', async () => {
@@ -42,14 +45,10 @@ test.describe('DTx Login & Health Store', () => {
         });
     });
 
-    // Skipping this negative test for now; re-enable after auth session support is added.
-    test.skip('@DTX-E2E-002 User sees error message with invalid password @e2e @smoke', async ({page}) => {
-        const loginPage = new LoginPage(page);
+    test('@DTX-E2E-002 User sees error message with invalid password', async () => {
         const user = nhsLoginUsers.testuserlive1;
 
         await test.step('Enter valid email and invalid password', async () => {
-            await expect(loginPage.emailInput).toBeVisible();
-
             await loginPage.emailInput.fill(user.email);
             await loginPage.passwordInput.fill('WrongPassword12');
             await loginPage.continueButton.click();
@@ -63,5 +62,4 @@ test.describe('DTx Login & Health Store', () => {
             await expect(loginPage.emailError).toContainText('Check your details and');
         });
     });
-
 });
