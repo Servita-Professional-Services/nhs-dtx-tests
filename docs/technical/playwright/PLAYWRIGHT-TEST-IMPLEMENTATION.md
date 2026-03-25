@@ -43,9 +43,6 @@ nhs-dtx-tests/
 ├── test-results/             # Test artifacts (generated)
 ├── allure-report/            # Allure report (generated)
 ├── allure-results/           # Allure raw results (generated)
-│
-├── Dockerfile                # Container setup
-├── dockerised-test-run.sh    # Docker execution script
 ├── playwright.config.ts      # Playwright configuration
 ├── package.json              # Project dependencies
 ├── tsconfig.json             # TypeScript config
@@ -133,15 +130,12 @@ Assertions are kept in test files.
 Simple and minimal tagging is used.
 
 **Current tags:**
-
-* @e2e
-* @smoke
 * @DTX-E2E-001
 
 Run tests:
 
 ```bash
-npx playwright test --grep @smoke
+npx playwright test --grep @DTX-E2E-001
 ```
 
 Tagging will expand as more test types are introduced.
@@ -155,14 +149,6 @@ CI currently supports:
 * Smoke test execution
 * Basic reporting
 
-Example:
-
-```bash
-npx playwright test --grep @smoke
-```
-
-This will expand as coverage increases.
-
 ---
 
 ## 9. Reporting
@@ -175,15 +161,3 @@ Reports include:
 * Screenshots on failure
 * Traces for debugging
 * Video on failure
-
----
-
-## 10. Future Enhancements (Planned)
-
-The following are planned for future iterations:
-
-* API testing
-* Schema validation
-* Performance testing (k6)
-* Enhanced reporting (Allure)
-* Vendor-specific test structure

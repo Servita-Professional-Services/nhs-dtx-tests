@@ -1,12 +1,12 @@
 name: NHS DTx Automation Tests
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
-      - feature/**
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -16,9 +16,14 @@ permissions:
 
 jobs:
   e2e-tests:
-    name: E2E Tests
+    name: E2E Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [ chromium ]
 
     steps:
       - name: Checkout repository
@@ -33,11 +38,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run E2E tests
-        run: npm run test:e2e
+        run: npx playwright test --project=${{ matrix.browser }}
         env:
           CI: true
           BASE_URL: https://ddjc0dec27n24.cloudfront.net
@@ -48,17 +53,17 @@ jobs:
 
       - name: Upload Allure report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-${{ matrix.browser }}
           path: allure-report/
           retention-days: 30
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 30
 
@@ -68,9 +73,10 @@ jobs:
           echo "## NHS DTx E2E Test Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Suite: Playwright E2E" >> $GITHUB_STEP_SUMMARY
+          echo "- Browser: ${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
           echo "- Environment: CI" >> $GITHUB_STEP_SUMMARY
-          echo "- Allure report artifact: allure-report" >> $GITHUB_STEP_SUMMARY
-          echo "- Playwright HTML report artifact: playwright-report" >> $GITHUB_STEP_SUMMARY
+          echo "- Allure report artifact: allure-report-${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Playwright HTML report artifact: playwright-report-${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Notes" >> $GITHUB_STEP_SUMMARY
           echo "- Download Allure report and open index.html." >> $GITHUB_STEP_SUMMARY
@@ -78,7 +84,7 @@ jobs:
 
   deploy-allure-report:
     name: Deploy Allure Report to GitHub Pages
-    if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+    if: always() && github.ref == 'refs/heads/main'
     needs: e2e-tests
     runs-on: ubuntu-latest
 
@@ -88,9 +94,9 @@ jobs:
 
     steps:
       - name: Download Allure report artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-chromium
           path: ./allure-report
 
       - name: Upload Pages artifact

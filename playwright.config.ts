@@ -9,7 +9,7 @@ export default defineConfig({
     fullyParallel: !isCI,
     forbidOnly: isCI,
     retries: isCI ? 1 : 0,
-    workers: isCI ? 2 : undefined,
+    workers: isCI ? 1 : undefined,
     failOnFlakyTests: isCI,
     timeout: 60_000,
 
@@ -23,12 +23,12 @@ export default defineConfig({
         ? [
             ['line'],
             ['html', {outputFolder: 'playwright-report', open: 'never'}],
-            ['allure-playwright'],
+            ['allure-playwright', {resultsDir: 'allure-results'}],
         ]
         : [
             ['list'],
             ['html', {outputFolder: 'playwright-report', open: 'on-failure'}],
-            ['allure-playwright'],
+            ['allure-playwright', {resultsDir: 'allure-results'}],
         ],
     use: {
         baseURL: env.baseUrl || 'http://localhost:3000',
@@ -49,18 +49,5 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
             },
         },
-        {
-            name: 'Mobile Safari',
-            use: {
-                ...devices['iPhone 12'],
-            },
-        },
     ],
-
-    // webServer: {
-    //   command: 'npm run start',
-    //   url: env.baseUrl,
-    //   reuseExistingServer: !isCI,
-    //   timeout: 120_000,
-    // },
 });
