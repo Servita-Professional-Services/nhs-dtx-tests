@@ -46,40 +46,22 @@ npx playwright install --with-deps
 
 Run all commands from the root of the repository.
 
-### Install dependencies
-
-```bash
-npm install
-```
-
 ### Run all tests
 
 ```bash
 npm run test
 ```
 
-### Run E2E tests
-
-```bash
-npm run test:e2e
-```
-
-### Run by tag
-
-```bash
-npx playwright test --grep @smoke
-```
-
 ### Run in headed mode
 
 ```bash
-npm run test:e2e --headed
+npm run test:headed
 ```
 
 ### Run in debug mode
 
 ```bash
-npm run test:e2e --debug
+npm run test --debug
 ```
 
 ## Playwright Tests
@@ -145,9 +127,8 @@ export TEST_ENV=dev
 
 GitHub Actions pipelines are configured for:
 
-* **PR Pipeline** – runs smoke tests on pull requests
-* **Main Branch Pipeline** – scheduled and manual runs
-
+* **PR Pipeline** – runs smoke tests on pull requests to main
+* **Main Branch Pipeline** – runs on every push to main
 
 ## Test Reports
 

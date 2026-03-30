@@ -2,8 +2,6 @@ name: NHS DTx Automation Tests
 
 on:
   pull_request:
-    branches:
-      - main
   push:
     branches:
       - main

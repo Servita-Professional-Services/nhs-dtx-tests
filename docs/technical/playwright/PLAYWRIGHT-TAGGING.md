@@ -30,21 +30,18 @@ The tagging mechanism is currently designed to:
 * Provide simple and consistent test categorisation
 * Support debugging using unique test identifiers
 
-This strategy will expand as more test types (API, UI, regression) are introduced.
+This strategy will expand as more test types (API, UI, performance, accessibility) are introduced.
 
 ---
 
 ### 3. Tag Categories
 
-The DTx automation framework uses a small set of consistent tags to categorise tests.
-
-| Tag         | Purpose                                      |
-| ----------- | -------------------------------------------- |
-| @api        | API and integration tests *(planned)*        |
-| @ui         | UI level tests *(planned)*                   |
-| @e2e        | End-to-end system tests *(currently in use)* |
-| @smoke      | Critical validation tests                    |
-| @regression | Full regression test suite *(planned)*       |
+| Tag        | Purpose                                      |
+| ---------- | -------------------------------------------- |
+| @api       | API and integration tests *(planned)*        |
+| @ui        | UI level tests *(planned)*                   |
+| @e2e       | End-to-end system tests *(currently in use)* |
+| @smoke     | Critical validation tests                    |
 
 At this stage, only **E2E tests are implemented**, with tagging kept minimal.
 Additional tags will be used as the framework evolves.
@@ -70,7 +67,7 @@ Example Test IDs:
 ### 5. Example Test Structure
 
 ```ts
-test('@DTX-E2E-001 - User login to HealthStore @e2e @smoke', async ({ page }) => {
+test('@DTX-E2E-001 - User login to HealthStore', async ({ page }) => {
     // test logic
 });
 ```
@@ -86,6 +83,8 @@ This structure provides:
 ### 6. Running Tagged Tests
 
 Playwright allows tests to be filtered using the `--grep` option.
+
+### Examples
 
 Run E2E tests:
 

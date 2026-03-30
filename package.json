@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:e2e": "playwright test --grep @e2e",
-    "test:smoke": "playwright test --grep @smoke",
-    "test:e2e:headed": "playwright test --grep @e2e --headed"
+    "test:headed": "playwright test --headed"
   },
   "keywords": [],
   "author": "",

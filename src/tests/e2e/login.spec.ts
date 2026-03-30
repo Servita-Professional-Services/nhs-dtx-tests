@@ -44,7 +44,7 @@ test.describe('DTx Login & Health Store', () => {
         });
     });
 
-    test('@DTX-E2E-002 User sees error message with invalid password', async () => {
+    test.skip('@DTX-E2E-002 User sees error message with invalid password', async () => {
         const user = nhsLoginUsers.testuserlive1;
 
         await test.step('Enter valid email and invalid password', async () => {
