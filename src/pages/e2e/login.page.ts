@@ -10,6 +10,8 @@ export class LoginPage {
     readonly otpHeading: Locator;
     readonly securityCodeInput: Locator;
     readonly acceptCookiesButton: Locator;
+    readonly errorSummary: Locator;
+    readonly emailError: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -20,10 +22,8 @@ export class LoginPage {
         this.otpHeading = page.getByRole('heading', {name: 'Enter the security code'});
         this.securityCodeInput = page.getByRole('textbox', {name: 'Security code'});
         this.acceptCookiesButton = page.getByRole('button', {name: 'Accept all cookies'});
-    }
-
-    async goto() {
-        await this.page.goto('http://localhost:3000/');
+        this.errorSummary = page.getByRole('alert', { name: 'There is a problem' })
+        this.emailError = page.getByText('Error: Check your details and');
     }
 
     async acceptCookiesIfVisible() {
