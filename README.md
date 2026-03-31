@@ -13,7 +13,7 @@ This repository contains initial test automation for the NHS Digital Therapeutic
 
 Ensure the following are installed:
 
-* Node.js (v18+ recommended)
+* Node.js (v24 recommended)
 * npm
 
 ## Universal Tools & Configuration (REQUIRED)
