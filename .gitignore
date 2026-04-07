@@ -19,3 +19,7 @@ reports/
 
 # OS
 .DS_Store
+
+# Build
+dist/
+*.config.js

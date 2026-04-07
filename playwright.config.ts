@@ -5,11 +5,8 @@ const env = getEnv();
 const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
-    testDir: './src/tests',
-    fullyParallel: !isCI,
     forbidOnly: isCI,
     retries: isCI ? 1 : 0,
-    workers: isCI ? 1 : undefined,
     failOnFlakyTests: isCI,
     timeout: 60_000,
 
@@ -30,23 +27,32 @@ export default defineConfig({
             ['html', {outputFolder: 'playwright-report', open: 'on-failure'}],
             ['allure-playwright', {resultsDir: 'allure-results'}],
         ],
-    use: {
-        baseURL: env.baseUrl || 'http://localhost:3000',
-        headless: isCI,
-        viewport: {width: 1280, height: 720},
-        actionTimeout: 30_000,
-        navigationTimeout: 30_000,
-        ignoreHTTPSErrors: true,
-        trace: 'retain-on-failure',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-    },
 
     projects: [
         {
             name: 'chromium',
+            testDir: './src/tests/e2e',
+            fullyParallel: true,
             use: {
                 ...devices['Desktop Chrome'],
+                baseURL: env.baseUrl,
+                headless: isCI,
+                viewport: {width: 1280, height: 720},
+                actionTimeout: 30_000,
+                navigationTimeout: 30_000,
+                ignoreHTTPSErrors: true,
+                trace: 'retain-on-failure',
+                screenshot: 'only-on-failure',
+                video: 'retain-on-failure',
+            },
+        },
+
+        {
+            name: 'api',
+            testDir: './src/tests/api',
+            fullyParallel: false,
+            use: {
+                baseURL: env.apiBaseUrl,
             },
         },
     ],
