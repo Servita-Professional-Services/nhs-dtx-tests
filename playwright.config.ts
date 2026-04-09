@@ -5,6 +5,7 @@ const env = getEnv();
 const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
+    globalSetup: './global-setup.ts',
     forbidOnly: isCI,
     retries: isCI ? 1 : 0,
     failOnFlakyTests: isCI,
@@ -36,6 +37,7 @@ export default defineConfig({
             use: {
                 ...devices['Desktop Chrome'],
                 baseURL: env.baseUrl,
+                storageState: 'src/test-data/session/auth.json',
                 headless: isCI,
                 viewport: {width: 1280, height: 720},
                 actionTimeout: 30_000,

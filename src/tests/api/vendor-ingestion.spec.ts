@@ -4,7 +4,7 @@ import {validVendorBatchPayload} from '../../test-data/api/vendor-batch-payloads
 
 test.describe('Vendor Ingestion API', () => {
 
-    test('accepts valid batch payload', async ({request}) => {
+    test('@DTX-API-001 accepts valid batch payload', async ({request}) => {
         const client = new VendorIngestionClient(request);
 
         const response = await client.submitBatch(validVendorBatchPayload);
@@ -19,7 +19,7 @@ test.describe('Vendor Ingestion API', () => {
         expect(body.issue[0].diagnostics).toBe('Stub response');
     });
 
-    test('returns 403 when api key is missing', async ({request}) => {
+    test('@DTX-API-002 returns 403 when api key is missing', async ({request}) => {
         const client = new VendorIngestionClient(request, {omitApiKey: true});
 
         const response = await client.submitBatch(validVendorBatchPayload);
@@ -27,7 +27,7 @@ test.describe('Vendor Ingestion API', () => {
         expect(response.status()).toBe(403);
     });
 
-    test('returns 403 when api key is invalid', async ({request}) => {
+    test('@DTX-API-003 returns 403 when api key is invalid', async ({request}) => {
         const client = new VendorIngestionClient(request, {apiKey: 'invalid-key-000'});
 
         const response = await client.submitBatch(validVendorBatchPayload);
@@ -35,7 +35,7 @@ test.describe('Vendor Ingestion API', () => {
         expect(response.status()).toBe(403);
     });
 
-    test('response contains valid OperationOutcome structure', async ({request}) => {
+    test('@DTX-API-004 response contains valid OperationOutcome structure', async ({request}) => {
         const client = new VendorIngestionClient(request);
 
         const response = await client.submitBatch(validVendorBatchPayload);

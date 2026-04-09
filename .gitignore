@@ -23,3 +23,5 @@ reports/
 # Build
 dist/
 *.config.js
+
+src/test-data/session/
