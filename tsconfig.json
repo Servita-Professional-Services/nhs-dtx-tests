@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowJs": true,
     "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "@playwright/test"]
   },
-  "include": ["src"]
+  "include": [
+    "src/**/*.ts",
+    "global-setup.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

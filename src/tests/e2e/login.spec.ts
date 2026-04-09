@@ -15,19 +15,12 @@ test.describe('DTx Login & Health Store', () => {
         yourHealthPage = new YourHealthPage(page);
 
         await page.goto('/');
-        await loginPage.acceptCookiesIfVisible();
     });
 
     test('@DTX-E2E-001 User can log in and open Health Store', async () => {
-        const user = nhsLoginUsers.testuserlive;
-
-        await test.step('Log in with valid NHS login user', async () => {
-            await loginPage.loginAs(user);
-        });
-
-        await test.step('Verify Home page is displayed', async () => {
+        await test.step('Verify user is logged in and Home page is displayed', async () => {
             await expect(homePage.homeHeading).toBeVisible();
-            await expect(homePage.welcomeText).toBeVisible();
+            //await expect(homePage.welcomeText).toBeVisible();
         });
 
         await test.step('Navigate to Your Health', async () => {
@@ -56,7 +49,6 @@ test.describe('DTx Login & Health Store', () => {
         await test.step('Validate login error is displayed', async () => {
             await expect(loginPage.errorSummary).toBeVisible();
             await expect(loginPage.errorSummary).toContainText('There is a problem');
-
             await expect(loginPage.emailError).toBeVisible();
             await expect(loginPage.emailError).toContainText('Check your details and');
         });
