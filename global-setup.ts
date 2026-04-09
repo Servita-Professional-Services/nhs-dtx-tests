@@ -1,4 +1,4 @@
-import {chromium, expect} from '@playwright/test';
+import {chromium, expect, FullConfig} from '@playwright/test';
 import {LoginPage} from './src/pages/e2e/login.page';
 import {HomePage} from './src/pages/e2e/home.page';
 import {nhsLoginUsers} from './src/test-data/nhsLoginUsers';
@@ -8,6 +8,14 @@ import * as fs from 'fs';
 const SESSION_PATH = 'src/test-data/session/auth.json';
 
 async function globalSetup() {
+    const isApiOnly = process.argv.includes('--project=api')
+        || (process.argv.includes('--project') && process.argv.includes('api'));
+
+    if (isApiOnly) {
+        console.log('API project only — skipping browser login');
+        return;
+    }
+
     const env = getEnv();
 
     const browser = await chromium.launch({headless: true});
