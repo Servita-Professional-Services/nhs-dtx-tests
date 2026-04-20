@@ -3,6 +3,8 @@ import {VendorIngestionClient} from '../../api/clients/vendor-ingestion.client';
 import {validVendorBatchPayload} from '../../test-data/api/vendor-batch-payloads';
 import {getBatchByCorrelationId} from '../../api/clients/dynamodb.client';
 
+const ERROR_CODES = /^(required|value|structure|exception)$/;
+
 test.describe('Vendor Ingestion API', () => {
 
     test.describe('happy path', () => {
@@ -93,7 +95,7 @@ test.describe('Vendor Ingestion API', () => {
             expect(response.status()).toBe(400);
             expect(body.resourceType).toBe('OperationOutcome');
             expect(body.issue[0].severity).toBe('error');
-            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception)$/);
+            expect(body.issue[0].code).toMatch(ERROR_CODES);
         });
 
         test('@DTX-API-008 returns 400 when correlation ID is not a valid UUID', async ({request}) => {
@@ -104,7 +106,7 @@ test.describe('Vendor Ingestion API', () => {
             expect(response.status()).toBe(400);
             expect(body.resourceType).toBe('OperationOutcome');
             expect(body.issue[0].severity).toBe('error');
-            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception|informational)$/);
+            expect(body.issue[0].code).toMatch(ERROR_CODES);
         });
 
     });
@@ -119,7 +121,7 @@ test.describe('Vendor Ingestion API', () => {
             expect(response.status()).toBe(400);
             expect(body.resourceType).toBe('OperationOutcome');
             expect(body.issue[0].severity).toBe('error');
-            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception|informational)$/);
+            expect(body.issue[0].code).toMatch(ERROR_CODES);
         });
 
         test('@DTX-API-010 returns 400 when resourceType is not Bundle', async ({request}) => {
@@ -151,7 +153,7 @@ test.describe('Vendor Ingestion API', () => {
             expect(response.status()).toBe(400);
             expect(body.resourceType).toBe('OperationOutcome');
             expect(body.issue[0].severity).toBe('error');
-            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception|informational)$/);
+            expect(body.issue[0].code).toMatch(ERROR_CODES);
         });
 
         test('@DTX-API-012 returns 400 when bundle type is not transaction', async ({request}) => {
@@ -177,7 +179,7 @@ test.describe('Vendor Ingestion API', () => {
             expect(response.status()).toBe(400);
             expect(body.resourceType).toBe('OperationOutcome');
             expect(body.issue[0].severity).toBe('error');
-            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception|informational)$/);
+            expect(body.issue[0].code).toMatch(ERROR_CODES);
         });
 
     });
