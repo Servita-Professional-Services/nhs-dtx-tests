@@ -93,7 +93,7 @@ test.describe('Vendor Ingestion API', () => {
             expect(response.status()).toBe(400);
             expect(body.resourceType).toBe('OperationOutcome');
             expect(body.issue[0].severity).toBe('error');
-            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception|informational)$/);
+            expect(body.issue[0].code).toMatch(/^(required|value|structure|exception)$/);
         });
 
         test('@DTX-API-008 returns 400 when correlation ID is not a valid UUID', async ({request}) => {
