@@ -8,8 +8,8 @@ import * as fs from 'fs';
 const SESSION_PATH = 'src/test-data/session/auth.json';
 
 async function globalSetup() {
-    const isApiOnly = process.argv.includes('--project=api')
-        || (process.argv.includes('--project') && process.argv.includes('api'));
+    const args = process.argv.join(' ');
+    const isApiOnly = args.includes('--project=api') || args.includes('project=api');
 
     if (isApiOnly) {
         console.log('API project only — skipping browser login');
