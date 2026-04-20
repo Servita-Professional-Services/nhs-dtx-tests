@@ -184,7 +184,8 @@ test.describe('Vendor Ingestion API', () => {
 
     test.describe('database persistence', () => {
 
-        test('@DTX-API-014 persists batch with correct correlation ID', async ({request}) => {
+        test('@DTX-API-014 persists batch with correct correlation ID @local', async ({request}) => {
+
             const correlationId = crypto.randomUUID();
             const client = new VendorIngestionClient(request, {correlationId});
 
