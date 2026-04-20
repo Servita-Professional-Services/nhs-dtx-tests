@@ -4,6 +4,8 @@ import {ApiClient} from './api-clients';
 interface VendorIngestionClientOptions {
     apiKey?: string;
     omitApiKey?: boolean;
+    correlationId?: string;
+    omitCorrelationId?: boolean;
 }
 
 export class VendorIngestionClient {
@@ -22,11 +24,19 @@ export class VendorIngestionClient {
         };
 
         if (!this.options.omitApiKey) {
-            headers['x-api-key'] = this.options.apiKey ?? process.env.VENDOR_API_KEY ?? '';
+            const key = this.options.apiKey ?? process.env.VENDOR_API_KEY;
+            if (!key) {
+                throw new Error('VENDOR_API_KEY is not set and no apiKey option was provided');
+            }
+            headers['x-api-key'] = key;
+        }
+
+        if (!this.options.omitCorrelationId) {
+            headers['X-Correlation-Id'] = this.options.correlationId ?? crypto.randomUUID();
         }
 
         return this.apiClient.post(
-            `${process.env.API_BASE_URL}/pathway-events`,
+            `/pathway-events`,
             payload,
             headers,
         );
