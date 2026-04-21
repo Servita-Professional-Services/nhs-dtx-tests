@@ -31,6 +31,7 @@ async function globalSetup() {
     const homePage = new HomePage(page);
 
     await loginPage.loginAs(nhsLoginUsers.testuserlive);
+    await loginPage.trustDevicePopup();
 
     await expect(homePage.homeHeading).toBeVisible({timeout: 30_000});
     await page.waitForLoadState('networkidle');
