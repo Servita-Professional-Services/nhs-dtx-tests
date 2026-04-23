@@ -14,6 +14,9 @@ export class LoginPage {
     readonly emailError: Locator;
     readonly continueLink: Locator;
     readonly accessNhsServicesText: Locator;
+    readonly trustDeviceHeading: Locator;
+    readonly trustDeviceText: Locator;
+    readonly trustDeviceRadio: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -28,6 +31,9 @@ export class LoginPage {
         this.emailError = page.getByText('Error: Check your details and');
         this.continueLink = page.getByRole('link', { name: 'Continue' });
         this.accessNhsServicesText = page.getByText('Access your NHS services');
+        this.trustDeviceHeading = page.getByRole('heading', { name: 'Trust this device and log in' });
+        this.trustDeviceText = page.getByText('You\'ll still need your');
+        this.trustDeviceRadio = page.getByRole('radio', { name: 'Yes, trust this device and' });
     }
 
     async acceptCookiesIfVisible() {
@@ -57,6 +63,18 @@ export class LoginPage {
         await this.continueLink.click()
         await this.login(user.email, user.password);
         await this.enterOtp(user.otpCode);
-        await this.page.waitForLoadState('networkidle')
+        await this.page.waitForLoadState('networkidle');
+    }
+
+    async trustDevicePopup() {
+        const isTrustPopupVisible = this.trustDeviceHeading;
+
+        if (isTrustPopupVisible) {
+            await this.trustDeviceText.isVisible();
+            await this.trustDeviceRadio.check();
+            await this.continueButton.click();
+        } else {
+            console.log('Trust popup not present');
+        }
     }
 }
